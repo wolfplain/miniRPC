@@ -1,0 +1,10 @@
+#ifndef MINIRPC_COMMON_ERRORNO_H
+#define MINIRPC_COMMON_ERRORNO_H
+enum class ErrorNo {
+    SUCCESS,
+    FAILURE,
+    UNCONNECT,
+    INVALID_PARAM,
+    DATA_INVALID,
+};
+#endif  //  MINIRPC_COMMON_ERRORNO_H
