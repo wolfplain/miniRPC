@@ -18,7 +18,7 @@ build_tests()
 {
     mkdir -pv ${TESTS_BUILD_PATH}
     cd ${TESTS_BUILD_PATH}
-    CMAKE_TEST_ARG= "-DTEST_ON=1"
+    CMAKE_TEST_ARG="-DTEST_ON=1"
     cmake ${CMAKE_TEST_ARG} ${WORK_PATH}
     make -j
 }

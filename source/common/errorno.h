@@ -3,7 +3,7 @@
 enum class ErrorNo {
     SUCCESS,
     FAILURE,
-    UNCONNECT,
+    DISCONNECT,
     INVALID_PARAM,
     DATA_INVALID,
 };

@@ -1,0 +1,4 @@
+#ifndef MINIRPC_COMMON_UTILS_H
+#define MINIRPC_COMMON_UTILS_H
+constexpr int TIME_UNIT = 1000;
+#endif  // MINIRPC_COMMON_UTILS_H
