@@ -11,15 +11,13 @@ miniRPC is a remote protocol call service using Websocket as the network protoco
 
 ### Dependencies
 
-* Websocket doesn't depend on any open source, it's a good learning template for slef develop Websocket server.
-* Using Json format as the message format, the server uses rapidjson to process Json message.
-* Using GoogleTest as the unit test framework.
+* Websocket doesn't depend on any open source, it's a good learning template for self develop Websocket server.
+* Using Json format as the message format, the server uses [rapidjson](https://github.com/miloyip/rapidjson/)  to process Json message.
+* Using [googletest](https://code.google.com/p/googletest/) as the unit test framework.
 
 ### Installing
 
-* go into the miniRPC directory, and run ./build.sh. it will automatically create a build directory.
-  all of the headers and libraries will be installed into this directory. 
-* Any modifications needed to be made to files/folders
+* all the source headers and libraries are in the `./build/miniRPC/include` and `./build/miniRPC/lib` directory.
 
 ### Executing program
 
