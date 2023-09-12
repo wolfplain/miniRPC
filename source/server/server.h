@@ -5,7 +5,6 @@
 #include "connecter.h"
 
 #include <unordered_map>
-namespace Server {
 class WebSocketServer {
 public:
     ErrorNo Start();
@@ -34,5 +33,4 @@ private:
     static constexpr int MAX_EVENTS = 20;
     int timeEpollWaiting = 5000;  // 5000 : five seconds
 };
-}
 #endif  // MINIRPC_SERVER_SERVER_H

@@ -54,19 +54,19 @@ private:
 };
 
 #define LOG_DX(args...) \
-LOG(DEBUG).Print(false, __FUNCTION__, __LINE__, ##args)
-
-#define LOG_EX(args...) \
-LOG(ERROR).Print(false, __FUNCTION__, __LINE__, ##args)
-
-#define LOG_T(args...) \
-LOG(ERROR).Print(true, __FUNCTION__, __LINE__, ##args)
-
-#define LOG_D(args...) \
 LOG(DEBUG).Print(true, __FUNCTION__, __LINE__, ##args)
 
-#define LOG_E(args...) \
+#define LOG_EX(args...) \
 LOG(ERROR).Print(true, __FUNCTION__, __LINE__, ##args)
+
+#define LOG_T(args...) \
+LOG(ERROR).Print(false, __FUNCTION__, __LINE__, ##args)
+
+#define LOG_D(args...) \
+LOG(DEBUG).Print(false, __FUNCTION__, __LINE__, ##args)
+
+#define LOG_E(args...) \
+LOG(ERROR).Print(false, __FUNCTION__, __LINE__, ##args)
 
 
 // #define LOG_D(content) \

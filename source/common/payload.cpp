@@ -8,6 +8,7 @@
 #include <inttypes.h>
 
 #include <cstring>
+#include <memory>
 
 #if __BIG_ENDIAN__
     #define htonll(x)   (x)
@@ -63,8 +64,11 @@ ErrorNo EncodeShakeHanderPkt(const std::unordered_map<std::string, std::string> 
     dstData.append("Connection: upgrade\r\n");
     dstData.append("Upgrade: websocket\r\n");
     dstData.append("Sec-WebSocket-Accept: " + secAcceptKey + "\r\n");
+
+    // when add permessage-deflate the wscat can't process
     // if (header.count("Sec-WebSocket-Extensions")) {
-    //     dstData.append("Sec-WebSocket-Extensions: " + header.at("Sec-WebSocket-Extensions") + "\r\n");
+    //     dstData.append("Sec-WebSocket-Extensions: permessage-deflate; server_no_context_takeover");
+    //     // + header.at("Sec-WebSocket-Extensions") + "\r\n");  server_max_window_bits
     // }
     dstData.append("\r\n");  // last line
     return ErrorNo::SUCCESS;
@@ -80,7 +84,7 @@ ErrorNo DecodeDataPkt(const std::string &pkt, Payload &payload)
     // first byte get fin and opcode
     payload.fin = FIN(pkt[pos]);
     payload.rsv = RSV(pkt[pos]);
-    std::cout << "fin:" << payload.fin << ",rsv:" << payload.rsv << std::endl;
+    // LOG_D("fin:", payload.fin, ",rsv:", payload.rsv);
     payload.opcode = OPCODE(pkt[pos]);
     // second byte get mask and payload len
     pos++;
@@ -119,8 +123,25 @@ ErrorNo DecodeDataPkt(const std::string &pkt, Payload &payload)
 
 ErrorNo EncodeDataPkt(const Payload &payload, std::string &dstData)
 {
+/*
+    // WebSocket frame header
+    unsigned char frame[10];
+    frame[0] = 0x81;  // FIN + Text frame
+    frame[1] = 0x05;  // Payload length (5 bytes)
+
+    // WebSocket data payload
+    const std::string message = "Hello"; // Your WebSocket message
+    memcpy(&frame[2], message.c_str(), message.size());
+
+    // Send the WebSocket frame
+    if (send(connectFd_, frame, sizeof(frame), 0) == -1) {
+        perror("Send failed");
+        return ErrorNo::SUCCESS;
+    }
+    return ErrorNo::SUCCESS;
+*/
     // 0x80 set the FIN means all data has been processed
-    uint8_t header = (1 << 7) | (static_cast<uint8_t>(payload.opcode)) | (payload.rsv << 4);
+    uint8_t header = (1 << 7) | (static_cast<uint8_t>(payload.opcode));
     dstData.push_back(static_cast<char>(header));
     size_t dataLen = payload.payload.size();
     uint8_t payloadLen = 0;
@@ -136,15 +157,13 @@ ErrorNo EncodeDataPkt(const Payload &payload, std::string &dstData)
     }
     dstData.push_back(static_cast<char>(payloadLen));
     if (validPayloadBit) {
-        char *lenBuff = new char[validPayloadBit]{0};
+        std::unique_ptr<char[]> lenBuff(new char[validPayloadBit]);
         uint64_t len = (payloadLen = PAYLOAD_LEN_LIMIT126) ? htons(dataLen) : htonll(dataLen);
-        if (memcpy(&lenBuff, &len, validPayloadBit) == nullptr) {
+        if (memcpy(lenBuff.get(), &len, validPayloadBit) == nullptr) {
             LOG_E("payload len decode fail");
-            delete[] lenBuff;
             return ErrorNo::DATA_INVALID;
         }
-        dstData.append(lenBuff);
-        delete[] lenBuff;
+        dstData.append(lenBuff.get());
     }
     dstData.append(payload.payload);
     return ErrorNo::SUCCESS;

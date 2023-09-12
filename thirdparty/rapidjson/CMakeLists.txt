@@ -1,0 +1,28 @@
+project(miniRPC)
+cmake_minimum_required(VERSION 3.22)
+
+include(FetchContent)
+FetchContent_Declare(
+    rapidjson
+    PREFIX "vendor/rapidjson"
+    GIT_REPOSITORY "https://github.com/Tencent/rapidjson.git"
+    GIT_TAG f54b0e47a08782a6131cc3d60f94d038fa6e0a51
+    TIMEOUT 10
+    CMAKE_ARGS
+        -DRAPIDJSON_BUILD_TESTS=OFF
+        -DRAPIDJSON_BUILD_DOC=OFF
+        -DRAPIDJSON_BUILD_EXAMPLES=OFF
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ""
+    INSTALL_COMMAND ""
+    UPDATE_COMMAND ""
+)
+
+FetchContent_GetProperties(rapidjson)
+if(NOT rapidjson_POPULATED)
+    FetchContent_Populate(rapidjson)
+endif()
+
+# FetchContent_MakeAvailable(rapidjson)
+add_library(rapidjson INTERFACE)
+target_include_directories(rapidjson INTERFACE ${rapidjson_SOURCE_DIR}/include)

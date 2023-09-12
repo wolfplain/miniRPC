@@ -12,11 +12,13 @@ file(GLOB TESTS_SOURCE_LIST
     ${TESTS_DIR}/*.cpp
     ${TESTS_DIR}/server/*.cpp
     ${TESTS_DIR}/log/*.cpp
+    ${TESTS_DIR}/rpc/*.cpp
 )
 
 add_executable(ut-miniRPC ${TESTS_SOURCE_LIST})
 target_link_libraries(ut-miniRPC PRIVATE minirpc)
 target_link_libraries(ut-miniRPC PRIVATE gtest)
+# target_link_libraries(ut-miniRPC PRIVATE rapidjson)
 
-
-install(TARGETS ut-miniRPC DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+message("tests insall:" ${CMAKE_INSTALL_PREFIX})
+install(TARGETS ut-miniRPC DESTINATION ${CMAKE_INSTALL_PREFIX}/tests/bin)

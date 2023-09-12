@@ -37,30 +37,38 @@ ErrorNo Connecter::ProcessShakeHanderMessage(const std::string &content)
     if (errcodeNo != ErrorNo::SUCCESS) {
         return errcodeNo;
     }
-    return SendResponse(responseMsg);
+    return Write(responseMsg);
 }
 
-ErrorNo Connecter::ProcessDataPktMessage(const std::string &content)
-{
-    LOG_D("start process data package");
-    ErrorNo erorNo = DecodeDataPkt(content, payload_);
-    std::cout << payload_.payload << std::endl;
-
-    // when send response need fix
-    // std::string dstData;
-    // erorNo = EncodeDataPkt(payload, dstData);
-    // SendResponse(payload.payload);
-    return ErrorNo::SUCCESS;
-}
-
-ErrorNo Connecter::SendResponse(const std::string &responseMsg)
-{
-    LOG_D("rsp:",responseMsg);
+ErrorNo Connecter::Write(const std::string &responseMsg) {
     if (::write(connectFd_, responseMsg.c_str(), responseMsg.size()) < 0) {
         LOG_E("send msg fail");
         return ErrorNo::FAILURE;
     }
     return ErrorNo::SUCCESS;
+}
+
+ErrorNo Connecter::ProcessDataPktMessage(const std::string &content)
+{
+    LOG_D("start process data package");
+    return DecodeDataPkt(content, payload_);
+}
+
+ErrorNo Connecter::SendResponse(const Response &rsp)
+{
+    LOG_D("start send rsp");
+
+    std::string dstData;
+    Payload payload;
+    payload.payload = rsp.message;
+    payload.opcode = OpCode::TEXT_FRAME;
+    ErrorNo erorNo = EncodeDataPkt(payload, dstData);
+    if (erorNo != ErrorNo::SUCCESS) {
+        LOG_E("process rsp encode fail");
+        return erorNo;
+    }
+
+    return Write(dstData);
 }
 
 void Connecter::ResetPayload()

@@ -11,8 +11,6 @@
 #include <sys/ioctl.h>
 #include <fcntl.h>
 
-
-namespace Server {
 ErrorNo WebSocketServer::Start()
 {
     LOG_D("web socket server start...");
@@ -25,7 +23,7 @@ ErrorNo WebSocketServer::Start()
     struct sockaddr_in serverAddr;
     memset(&serverAddr, 0, sizeof(serverAddr));
     serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    serverAddr.sin_port = serverPort_;
+    serverAddr.sin_port = htons(serverPort_);
     serverAddr.sin_family = AF_INET;
 
     int ret = bind(socketFd_, reinterpret_cast<sockaddr *>(&serverAddr), sizeof(serverAddr));
@@ -59,9 +57,10 @@ ErrorNo WebSocketServer::ProcessConnect()
 
     for (;;) {
         int eventCnt = event_.GetEventNumber();
-        LOG_D(eventCnt);
+        LOG_D("total events need to process", eventCnt);
         for (int i = 0; i < eventCnt; i++) {
             int connectFd = event_.GetConnectFd(i);
+            LOG_D("start process connection:", connectFd, "");
             std::cout << connectFd << " socket:" << socketFd_ << " eventfd:" << eventFd_ << std::endl;
             ErrorNo errorNo = ErrorNo::SUCCESS;
             if (connectFd == socketFd_ && event_.IsReadEvent(i)) {
@@ -79,6 +78,7 @@ ErrorNo WebSocketServer::ProcessConnect()
                 LOG_E("handle Message fail");
                 DisConnectWithClient(connectFd);
             }
+            LOG_D("end process connection:", connectFd, "");
         }
     }
     return ErrorNo::SUCCESS;
@@ -189,5 +189,4 @@ WebSocketServer::~WebSocketServer()
 {
     (void)event_.SetEvents(socketFd_, EventType::HUP, EventOpt::DEL);
     ::close(socketFd_);
-}
 }

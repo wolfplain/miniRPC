@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 #include "server/server.h"
 
-using namespace Server;
 class TestServer : public testing::Test {
 public:
     void SetUp() {

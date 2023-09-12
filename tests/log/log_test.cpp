@@ -13,7 +13,7 @@ public:
 
 TEST_F(TestLOG, ControlV) {
     LOG log;
-    log.Print(__FUNCTION__, __LINE__, "hello", 20230907);
+    log.Print(false, __FUNCTION__, __LINE__, "hello", 20230907);
     LOG_T("my log");
     LOG_T("my log", 20230901);
 }

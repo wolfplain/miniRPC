@@ -2,6 +2,8 @@
 #define MINIRPC_SERVER_CONNECTER_H
 #include "common/errorno.h"
 #include "common/payload.h"
+#include "rpc/rpc_service.h"   // not good desgin
+
 enum ConnectStatus {
     WAITING_SHAKE_MSG,
     WAITING_DATA_PKT,
@@ -16,7 +18,7 @@ public:
         : connectFd_(connectFd), status_(ConnectStatus::WAITING_SHAKE_MSG) {}
     ~Connecter() = default;
     ErrorNo ProcessMessage(const std::string &content);
-    ErrorNo SendResponse(const std::string &responseMsg);
+    ErrorNo SendResponse(const Response &rsp);
     void SetConnectStatus(const ConnectStatus &status)
     {
         status_ = status;
@@ -33,8 +35,8 @@ public:
 private:
     ErrorNo ProcessShakeHanderMessage(const std::string &content);
     ErrorNo ProcessDataPktMessage(const std::string &content);
+    ErrorNo Write(const std::string &responseMsg);
 
-    
     int connectFd_;
     ConnectStatus status_;
     Payload payload_;
