@@ -29,11 +29,20 @@ cd ./miniRPC
 ./build.sh
 ```
 
-* run program
+* run test program
 ```
 ./build/tests/tests/ut-miniRPC --gtest_filter=*
 ```
 
+* run example program to check how to use minirpc. after execute example binary, the rpc sever will start, enjoy your test
+```
+cd example
+mkdir build
+cd build
+cmake ..
+make
+./example
+```
 ## Authors
 
 [@david xie](www.linkedin.com/in/wei-xie-make-possible)
