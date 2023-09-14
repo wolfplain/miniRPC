@@ -39,7 +39,7 @@ public:
     }
 };
 
-int main(int argn, char** argc) {
+int RegisterService() {
     MathService mathservice("mathservice");  // mathservice : the name of service
     // register the service to service center
     ErrorNo err = RpcBuilder::GetRpcBuilder().RegisterService(&mathservice);
@@ -47,8 +47,15 @@ int main(int argn, char** argc) {
         LOG_E("register service error");
         return -1;
     }
+    return 0;
+}
 
+int main(int argn, char** argc) {
+    if (RegisterService() != 0) {
+        return -1;
+    }
     // create rpc server and start the server, 
     RpcServer server(8081);  // 8081 : the server port
     server.Start();
+    return StartService();
 }

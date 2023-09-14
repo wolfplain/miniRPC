@@ -4,7 +4,7 @@ miniRPC
 
 ## Description
 
-miniRPC is a remote protocol call service using Websocket as the network protocol.
+miniRPC is a remote procedure call service using Websocket as the network protocol.
 
 
 ## Getting Started

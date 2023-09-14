@@ -19,6 +19,8 @@ add_dependencies(minirpc rapidjson)
 target_link_libraries(minirpc PRIVATE ssl crypto)
 target_link_libraries(minirpc PUBLIC rapidjson)
 
+add_executable(miniRPC ${SRC_DIR}/main.cpp)
+target_link_libraries(miniRPC PRIVATE minirpc)
 
 # install headers for release
 install(TARGETS minirpc
