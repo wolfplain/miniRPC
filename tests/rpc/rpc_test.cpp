@@ -46,7 +46,7 @@ TEST_F(TestRpc, MathAddcall) {
 }
 
 TEST_F(TestRpc, StartService) {
-    RpcServer server(8080);
+    RpcServer server(8081);
     MathService mathService("mathservice");
     EXPECT_EQ(ErrorNo::SUCCESS, RpcBuilder::GetRpcBuilder().RegisterService(&mathService));
     EXPECT_EQ(server.Start(), ErrorNo::SUCCESS); // start the websocket

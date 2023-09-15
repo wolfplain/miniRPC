@@ -19,6 +19,8 @@ miniRPC is a remote procedure call service using Websocket as the network protoc
 
 * all the source headers and libraries are in the `./build/miniRPC/include` and `./build/miniRPC/lib` directory.
 
+* also you can try use the docker to intall the libraries to your local host.
+
 ### Executing program
 
 * go into the miniRPC directory, and run ./build.sh. it will automatically create a build directory.
@@ -43,6 +45,17 @@ cmake ..
 make
 ./example
 ```
+* run miniRPC program in docker. fisrt you just need get the docker/dockerfile, second build your docker image and run, all the source code and environment will be set automatically.
+
+for example:
+```
+cd docker
+docker build --tag minirpc:v1.0 .
+docker run -it minirpc:v.10
+cd /usr/src/miniRPC
+```
+
+
 ## Authors
 
 [@david xie](www.linkedin.com/in/wei-xie-make-possible)

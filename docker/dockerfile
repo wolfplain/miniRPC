@@ -5,5 +5,7 @@ RUN set -x; buildDeps='libssl-dev g++ cmake git' \
     && mkdir -p /usr/src/miniRPC \
     && git clone https://github.com/wolfplain/miniRPC.git /usr/src/miniRPC \
     && cd /usr/src/miniRPC \
-    && sh +x build.sh \
-    && apt-get purge -y --auto-remove $buildDeps
+    && sh +x build.sh
+# choose to clean the image just for execute binary 
+# optional apt-get purge -y --auto-remove $buildDeps
+WORKDIR /usr/src/miniRPC
