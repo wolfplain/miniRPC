@@ -7,14 +7,16 @@ like minirpc /absolute/path/to/user/dynamic/library 8081
 #include "common/log.h"
 #include "server/rpc_server.h"
 
+#include <dlfcn.h>
+
 int main(int argc, char** argv) {
     if (argc != 3) {
         LOG_E("input parameters error");
         return -1;
     }
     char *libName = argv[1];
-    int port = argv[2];
-    LOG_D("user library:", libName);
+    int port = std::stoi(argv[2], nullptr, 10);
+    LOG_D("user library:", libName, " port:", port);
 
     char *error;
     void *handle = dlopen(libName, RTLD_LAZY);
@@ -26,9 +28,9 @@ int main(int argc, char** argv) {
     dlerror();    /* Clear any existing error */
 
     int (*RegisterService)();
-    RegisterService = dlsym(handle, "RegisterService");
+    RegisterService = (int(*)())dlsym(handle, "RegisterService");
 
-    if ((error = dlerror()) != NULL) {   
+    if ((error = dlerror()) != NULL) {
         LOG_E("error:", error);
         return -1;
     }

@@ -21,6 +21,8 @@ target_link_libraries(minirpc PUBLIC rapidjson)
 
 add_executable(miniRPC ${SRC_DIR}/main.cpp)
 target_link_libraries(miniRPC PRIVATE minirpc)
+install(TARGETS miniRPC
+       RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 
 # install headers for release
 install(TARGETS minirpc
@@ -36,4 +38,5 @@ file(GLOB EVENT_HEADER ${SRC_DIR}/event/*.h)
 install(FILES ${SERVER_HEADER} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/server/)
 install(FILES ${CLIENT_HEADER} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/client/)
 install(FILES ${COMMON_HEADER} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/common/)
+install(FILES ${RPC_HEADER} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/rpc/)
 install(FILES ${EVENT_HEADER} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/event/)

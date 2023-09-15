@@ -1,4 +1,5 @@
 #include "server/rpc_server.h"
+#include "mathservice.h"
 
 int main(int argn, char** argc) {
     if (RegisterService() != 0) {

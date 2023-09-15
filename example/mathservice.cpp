@@ -1,7 +1,5 @@
-#include "server/rpc_server.h"
 #include "rpc/rpc_service.h"
 #include "rpc/rpc_builder.h"
-
 
 /*
 
@@ -39,7 +37,7 @@ public:
     }
 };
 
-int RegisterService() {
+extern "C" int RegisterService() {
     MathService mathservice("mathservice");  // mathservice : the name of service
     // register the service to service center
     ErrorNo err = RpcBuilder::GetRpcBuilder().RegisterService(&mathservice);
@@ -50,12 +48,3 @@ int RegisterService() {
     return 0;
 }
 
-int main(int argn, char** argc) {
-    if (RegisterService() != 0) {
-        return -1;
-    }
-    // create rpc server and start the server, 
-    RpcServer server(8081);  // 8081 : the server port
-    server.Start();
-    return StartService();
-}

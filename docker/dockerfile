@@ -1,0 +1,9 @@
+FROM ubuntu
+RUN set -x; buildDeps='libssl-dev g++ cmake git' \
+    && apt-get update \
+    && apt-get install -y $buildDeps \
+    && mkdir -p /usr/src/miniRPC \
+    && git clone https://github.com/wolfplain/miniRPC.git /usr/src/miniRPC \
+    && cd /usr/src/miniRPC \
+    && sh +x build.sh \
+    && apt-get purge -y --auto-remove $buildDeps
