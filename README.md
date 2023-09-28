@@ -61,14 +61,14 @@ cd /usr/src/miniRPC
 [@david xie](www.linkedin.com/in/wei-xie-make-possible)
 
 ## Roadmap
-1, Using WebSocket as connect tool;
-2, Using event framework to process connect messages (JSON format);
-3, Support MAC and Linux;
-4, Support k8s, docker deployment;
-5, Support more protocol, TCP, HTTP;
-6, Support stateful and stateless FAAS, provide storage features;
-7, Support protocol, xml message format;
-8, Support WebAssembly;
+1, Using WebSocket as connect tool;  
+2, Using event framework to process connect messages (JSON format);  
+3, Support MAC and Linux;  
+4, Support k8s, docker deployment;  
+5, Support more protocol, TCP, HTTP;  
+6, Support stateful and stateless FAAS, provide storage features;  
+7, Support protocol, xml message format;  
+8, Support WebAssembly;  
 
 
 ## Version History
