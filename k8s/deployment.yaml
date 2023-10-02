@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minirpc
+  namespace: default
+spec:
+  strategy:
+    rollingUpdate:
+      maxSurge: 35%
+      maxUnavailable: 35%
+  replicas: 1
+  selector:
+    matchLabels:
+      run: minirpc
+  template:
+    metadata:
+      labels:
+        run: minirpc
+    spec:
+      containers:
+      -  name: minirpc
+         image: minirpc:v1.0
+         # never pull the image policy
+         imagePullPolicy: Never
+         ports:
+         -  containerPort: 8081

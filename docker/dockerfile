@@ -5,7 +5,13 @@ RUN set -x; buildDeps='libssl-dev g++ cmake git' \
     && mkdir -p /usr/src/miniRPC \
     && git clone https://github.com/wolfplain/miniRPC.git /usr/src/miniRPC \
     && cd /usr/src/miniRPC \
-    && sh +x build.sh
-# choose to clean the image just for execute binary 
+    && sh +x build.sh \
+    && cd example && mkdir build && cd build && cmake .. && make
+
+# choose to clean the image just for execute binary
 # optional apt-get purge -y --auto-remove $buildDeps
 WORKDIR /usr/src/miniRPC
+ENV LD_LIBRARY_PATH /usr/src/miniRPC/build/miniRPC/lib/
+EXPOSE 8081
+# execute process, here use example as instance
+CMD ["/usr/src/miniRPC/build/miniRPC/bin/miniRPC", "/usr/src/miniRPC/example/build/libmathservice.so", "8081"]
