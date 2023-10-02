@@ -16,5 +16,5 @@
 * step 6: minikube start service  
     ```minikube service minirpc --url  ```
 
-* step 7: choose online tool to test WebSocket
+* step 7: choose online tool to test WebSocket, example:  
     ```ws://127.0.0.1:52358```
