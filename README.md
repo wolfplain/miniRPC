@@ -47,7 +47,7 @@ make
 ```
 * run miniRPC program in docker. fisrt you just need get the docker/dockerfile, second build your docker image and run, all the source code and environment will be set automatically.
 
-for example:
+for example (the dockerfile is based on the example library, user can change to own library):
 ```
 cd docker
 docker build --tag minirpc:v1.0 .
@@ -55,6 +55,7 @@ docker run -it minirpc:v1.0
 cd /usr/src/miniRPC
 ```
 
+* run miniRPC program in kubernetes. please follow [k8s/README.md](https://github.com/wolfplain/miniRPC/blob/main/k8s/README.md)
 
 ## Authors
 
@@ -67,7 +68,7 @@ cd /usr/src/miniRPC
 4, Support k8s, docker deployment;  
 5, Support more protocol, TCP, HTTP;  
 6, Support stateful and stateless FAAS, provide storage features;  
-7, Support protocol, xml message format;  
+7, Support protocol buffers, xml message format;  
 8, Support WebAssembly;  
 
 
