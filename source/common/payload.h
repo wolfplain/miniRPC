@@ -24,7 +24,7 @@
  |                     Payload Data continued ...                |
  +---------------------------------------------------------------+
 */
-const std::string webSocketSecKey = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";  // GUID
+const std::string webSocketSecKey = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"; // GUID
 constexpr int MIN_PKT_SIZE = 2;
 constexpr int PAYLOAD_LEN_LIMIT126 = 126;
 constexpr int PAYLOAD_LEN_LIMIT127 = 127;
@@ -49,9 +49,7 @@ struct Payload {
     std::string payload;
 };
 
-
-inline uint8_t FIN(uint8_t data)
-{
+inline uint8_t FIN(uint8_t data) {
     return ((data & 0x080) >> 7);
 }
 
@@ -59,13 +57,11 @@ inline uint8_t RSV(uint8_t data) {
     return ((data & 0x070) >> 4);
 }
 
-inline OpCode OPCODE(uint8_t data)
-{
+inline OpCode OPCODE(uint8_t data) {
     return static_cast<OpCode>(data & 0x0F);
 }
 
-inline uint8_t MASK(uint8_t data)
-{
+inline uint8_t MASK(uint8_t data) {
     return ((data & 0x080) >> 7);
 }
 
@@ -73,4 +69,4 @@ ErrorNo DecodeShakeHanderPkt(const std::string &pkt, std::unordered_map<std::str
 ErrorNo EncodeShakeHanderPkt(const std::unordered_map<std::string, std::string> &header, std::string &dstData);
 ErrorNo DecodeDataPkt(const std::string &pkt, Payload &payload);
 ErrorNo EncodeDataPkt(const Payload &payload, std::string &dstData);
-#endif  //  MINIRPC_COMMON_PAYLOAD_H
+#endif //  MINIRPC_COMMON_PAYLOAD_H

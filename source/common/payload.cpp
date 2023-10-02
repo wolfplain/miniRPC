@@ -11,15 +11,14 @@
 #include <memory>
 
 #if __BIG_ENDIAN__
-    #define htonll(x)   (x)
-    #define ntohll(x)   (x)
+#define htonll(x) (x)
+#define ntohll(x) (x)
 #else
-    #define htonll(x)   ((((uint64_t)htonl(x&0xFFFFFFFF)) << 32) + htonl(x >> 32))
-    #define ntohll(x)   ((((uint64_t)ntohl(x&0xFFFFFFFF)) << 32) + ntohl(x >> 32))
+#define htonll(x) ((((uint64_t)htonl(x & 0xFFFFFFFF)) << 32) + htonl(x >> 32))
+#define ntohll(x) ((((uint64_t)ntohl(x & 0xFFFFFFFF)) << 32) + ntohl(x >> 32))
 #endif
 
-ErrorNo DecodeShakeHanderPkt(const std::string &pkt, std::unordered_map<std::string, std::string> &header)
-{
+ErrorNo DecodeShakeHanderPkt(const std::string &pkt, std::unordered_map<std::string, std::string> &header) {
     if (pkt.empty()) {
         LOG_E("pkt empty");
         return ErrorNo::DATA_INVALID;
@@ -35,27 +34,26 @@ ErrorNo DecodeShakeHanderPkt(const std::string &pkt, std::unordered_map<std::str
         if (!content.empty()) {
             size_t pos = content.find_first_of(":");
             std::string key = content.substr(0, pos);
-            pos = content.find_first_not_of(" ", pos + 1);  // trim the invalid empty space
+            pos = content.find_first_not_of(" ", pos + 1); // trim the invalid empty space
             std::string value = content.substr(pos);
             header[key] = value;
-            LOG_D("key:",key,"value:",value);
+            LOG_D("key:", key, "value:", value);
         }
-        start = end + 2;    // skip \r\n
-        end += 3; 
+        start = end + 2; // skip \r\n
+        end += 3;
     }
     return ErrorNo::SUCCESS;
 }
 
-ErrorNo EncodeShakeHanderPkt(const std::unordered_map<std::string, std::string> &header, std::string &dstData)
-{
+ErrorNo EncodeShakeHanderPkt(const std::unordered_map<std::string, std::string> &header, std::string &dstData) {
     std::string sha1Hash = Sha1::GetSha1HashString(header.at("Sec-WebSocket-Key") + webSocketSecKey);
     if (sha1Hash.empty()) {
         LOG_E("get sec sha1 hash fail");
         return ErrorNo::FAILURE;
     }
     std::string secAcceptKey;
-    if (Base64Encode(reinterpret_cast<const unsigned char*>(sha1Hash.c_str()),
-        sha1Hash.size(), secAcceptKey) != true) {
+    if (Base64Encode(reinterpret_cast<const unsigned char *>(sha1Hash.c_str()), sha1Hash.size(), secAcceptKey)
+        != true) {
         LOG_E("get base64 string fail");
         return ErrorNo::DATA_INVALID;
     }
@@ -70,12 +68,11 @@ ErrorNo EncodeShakeHanderPkt(const std::unordered_map<std::string, std::string> 
     //     dstData.append("Sec-WebSocket-Extensions: permessage-deflate; server_no_context_takeover");
     //     // + header.at("Sec-WebSocket-Extensions") + "\r\n");  server_max_window_bits
     // }
-    dstData.append("\r\n");  // last line
+    dstData.append("\r\n"); // last line
     return ErrorNo::SUCCESS;
 }
 
-ErrorNo DecodeDataPkt(const std::string &pkt, Payload &payload)
-{
+ErrorNo DecodeDataPkt(const std::string &pkt, Payload &payload) {
     if (pkt.size() <= MIN_PKT_SIZE) {
         LOG_E("invaild pkt");
         return ErrorNo::DATA_INVALID;
@@ -89,11 +86,11 @@ ErrorNo DecodeDataPkt(const std::string &pkt, Payload &payload)
     // second byte get mask and payload len
     pos++;
     payload.mask = MASK(pkt[pos]);
-    payload.payloadLen = (pkt[pos] & 0x07F);   // 0x07F : payload last 7 bits
+    payload.payloadLen = (pkt[pos] & 0x07F); // 0x07F : payload last 7 bits
     // check payload len
     pos++;
-    uint8_t payloadValidBit = (payload.payloadLen == PAYLOAD_LEN_LIMIT126) ? 2 :
-        ((payload.payloadLen == PAYLOAD_LEN_LIMIT127) ? 8 : 0);
+    uint8_t payloadValidBit =
+        (payload.payloadLen == PAYLOAD_LEN_LIMIT126) ? 2 : ((payload.payloadLen == PAYLOAD_LEN_LIMIT127) ? 8 : 0);
     if (payloadValidBit) {
         uint64_t length = 0;
         if (memcpy(&length, pkt.c_str() + pos, payloadValidBit) == nullptr) {
@@ -121,25 +118,24 @@ ErrorNo DecodeDataPkt(const std::string &pkt, Payload &payload)
     return ErrorNo::SUCCESS;
 }
 
-ErrorNo EncodeDataPkt(const Payload &payload, std::string &dstData)
-{
-/*
-    // WebSocket frame header
-    unsigned char frame[10];
-    frame[0] = 0x81;  // FIN + Text frame
-    frame[1] = 0x05;  // Payload length (5 bytes)
+ErrorNo EncodeDataPkt(const Payload &payload, std::string &dstData) {
+    /*
+        // WebSocket frame header
+        unsigned char frame[10];
+        frame[0] = 0x81;  // FIN + Text frame
+        frame[1] = 0x05;  // Payload length (5 bytes)
 
-    // WebSocket data payload
-    const std::string message = "Hello"; // Your WebSocket message
-    memcpy(&frame[2], message.c_str(), message.size());
+        // WebSocket data payload
+        const std::string message = "Hello"; // Your WebSocket message
+        memcpy(&frame[2], message.c_str(), message.size());
 
-    // Send the WebSocket frame
-    if (send(connectFd_, frame, sizeof(frame), 0) == -1) {
-        perror("Send failed");
+        // Send the WebSocket frame
+        if (send(connectFd_, frame, sizeof(frame), 0) == -1) {
+            perror("Send failed");
+            return ErrorNo::SUCCESS;
+        }
         return ErrorNo::SUCCESS;
-    }
-    return ErrorNo::SUCCESS;
-*/
+    */
     // 0x80 set the FIN means all data has been processed
     uint8_t header = (1 << 7) | (static_cast<uint8_t>(payload.opcode));
     dstData.push_back(static_cast<char>(header));

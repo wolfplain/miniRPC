@@ -3,8 +3,7 @@
 #include <cstring>
 #include <unistd.h>
 
-ErrorNo Connecter::ProcessMessage(const std::string &content)
-{
+ErrorNo Connecter::ProcessMessage(const std::string &content) {
     ErrorNo errcodeNo = ErrorNo::SUCCESS;
     if (status_ == ConnectStatus::WAITING_SHAKE_MSG) {
         errcodeNo = ProcessShakeHanderMessage(content);
@@ -24,8 +23,7 @@ ErrorNo Connecter::ProcessMessage(const std::string &content)
     return errcodeNo;
 }
 
-ErrorNo Connecter::ProcessShakeHanderMessage(const std::string &content)
-{
+ErrorNo Connecter::ProcessShakeHanderMessage(const std::string &content) {
     ErrorNo errcodeNo = DecodeShakeHanderPkt(content, headerInfo_);
     if (errcodeNo != ErrorNo::SUCCESS) {
         LOG_E("decode shake hander msg fail");
@@ -48,14 +46,12 @@ ErrorNo Connecter::Write(const std::string &responseMsg) {
     return ErrorNo::SUCCESS;
 }
 
-ErrorNo Connecter::ProcessDataPktMessage(const std::string &content)
-{
+ErrorNo Connecter::ProcessDataPktMessage(const std::string &content) {
     LOG_D("start process data package");
     return DecodeDataPkt(content, payload_);
 }
 
-ErrorNo Connecter::SendResponse(const Response &rsp)
-{
+ErrorNo Connecter::SendResponse(const Response &rsp) {
     LOG_D("start send rsp");
 
     std::string dstData;
@@ -71,7 +67,6 @@ ErrorNo Connecter::SendResponse(const Response &rsp)
     return Write(dstData);
 }
 
-void Connecter::ResetPayload()
-{
+void Connecter::ResetPayload() {
     payload_ = {0};
 }

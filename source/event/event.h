@@ -6,7 +6,7 @@
 
 #else
 #include <sys/epoll.h>
-#endif  // MAC
+#endif // MAC
 
 enum class EventType {
     READ,
@@ -31,6 +31,7 @@ public:
     bool IsReadEvent(int eventId);
     bool IsWriteEvent(int eventId);
     int GetConnectFd(int eventId);
+
 private:
     int socketFd_ = -1;
     int eventFd_ = -1;
@@ -38,6 +39,6 @@ private:
     struct kevent events_[MAX_EVENTS] = {0};
 #else
     struct epoll_event events_[MAX_EVENTS] = {0};
-#endif  // MAC
+#endif // MAC
 };
-#endif  // MINIRPC_COMMON_EVENT_H
+#endif // MINIRPC_COMMON_EVENT_H

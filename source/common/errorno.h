@@ -7,4 +7,4 @@ enum class ErrorNo {
     INVALID_PARAM,
     DATA_INVALID,
 };
-#endif  //  MINIRPC_COMMON_ERRORNO_H
+#endif //  MINIRPC_COMMON_ERRORNO_H

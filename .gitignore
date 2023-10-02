@@ -33,4 +33,5 @@
 
 # Tempory directory
 .vscode/
+.clang-format
 build

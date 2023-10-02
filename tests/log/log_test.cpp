@@ -4,10 +4,8 @@
 class TestLOG : public testing::Test {
 public:
     void SetUp() {
-
     }
     void TearDown() {
-
     }
 };
 
@@ -17,4 +15,3 @@ TEST_F(TestLOG, ControlV) {
     LOG_T("my log");
     LOG_T("my log", 20230901);
 }
-

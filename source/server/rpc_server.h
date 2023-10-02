@@ -11,11 +11,13 @@ public:
     virtual void OnClosed(int connectFd);
     virtual void OnError(int connectFd, ErrorNo errorNo);
 
-    RpcServer(int port) : WebSocketServer(port) {}
+    RpcServer(int port) : WebSocketServer(port) {
+    }
     ~RpcServer() {
         std::vector<std::string>{}.swap(clientName_);
     }
+
 private:
     std::vector<std::string> clientName_;
 };
-#endif  // MINIRPC_SERVER_RPCSERVER_H
+#endif // MINIRPC_SERVER_RPCSERVER_H

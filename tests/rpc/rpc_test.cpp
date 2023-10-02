@@ -4,14 +4,12 @@
 #include "rpc/rpc_builder.h"
 #include "server/rpc_server.h"
 
-
-class TestRpc : public testing::Test {
-
-};
+class TestRpc : public testing::Test {};
 
 class MathService : public RpcService {
 public:
-    MathService(const std::string &svc) : RpcService(svc) {}
+    MathService(const std::string &svc) : RpcService(svc) {
+    }
     ErrorNo Process(Request &req, Response &rsp) override {
         std::string svc;
         req.GetValue("svc", svc);
@@ -26,7 +24,7 @@ public:
             req.GetValue("p2", p2);
             rsp.message = std::to_string(Add(p1, p2));
             LOG_D("rpc call return value:", rsp.message);
-            EXPECT_EQ(3, Add(p1,p2));
+            EXPECT_EQ(3, Add(p1, p2));
         }
         return ErrorNo::SUCCESS;
     }

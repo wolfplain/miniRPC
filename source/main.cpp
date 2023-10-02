@@ -9,7 +9,7 @@ like minirpc /absolute/path/to/user/dynamic/library 8081
 
 #include <dlfcn.h>
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
     if (argc != 3) {
         LOG_E("input parameters error");
         return -1;
@@ -25,10 +25,10 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-    dlerror();    /* Clear any existing error */
+    dlerror(); /* Clear any existing error */
 
     int (*RegisterService)();
-    RegisterService = (int(*)())dlsym(handle, "RegisterService");
+    RegisterService = (int (*)())dlsym(handle, "RegisterService");
 
     if ((error = dlerror()) != NULL) {
         LOG_E("error:", error);
@@ -39,8 +39,8 @@ int main(int argc, char** argv) {
         LOG_E("start service fail");
     }
 
-    // create rpc server and start the server, 
-    RpcServer server(port);  // 8081 : the server port
+    // create rpc server and start the server,
+    RpcServer server(port); // 8081 : the server port
     server.Start();
 
     dlclose(handle);

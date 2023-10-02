@@ -11,8 +11,7 @@
 #include <sys/ioctl.h>
 #include <fcntl.h>
 
-ErrorNo WebSocketServer::Start()
-{
+ErrorNo WebSocketServer::Start() {
     LOG_D("web socket server start...");
     socketFd_ = socket(AF_INET, SOCK_STREAM, 0);
     if (socketFd_ == -1) {
@@ -41,8 +40,7 @@ ErrorNo WebSocketServer::Start()
     return ProcessConnect();
 }
 
-ErrorNo WebSocketServer::ProcessConnect()
-{
+ErrorNo WebSocketServer::ProcessConnect() {
     LOG_D("web socket server start process messages...");
     eventFd_ = event_.CreateEvent(socketFd_);
     if (eventFd_ < 0) {
@@ -65,7 +63,7 @@ ErrorNo WebSocketServer::ProcessConnect()
             ErrorNo errorNo = ErrorNo::SUCCESS;
             if (connectFd == socketFd_ && event_.IsReadEvent(i)) {
                 HandleAccept();
-                continue;  // keep process even if current connection is fails.
+                continue; // keep process even if current connection is fails.
             }
             if (event_.IsReadEvent(i)) {
                 errorNo = HandleReadEvent(connectFd);
@@ -84,66 +82,48 @@ ErrorNo WebSocketServer::ProcessConnect()
     return ErrorNo::SUCCESS;
 }
 
-ErrorNo WebSocketServer::HandleAccept()
-{
+ErrorNo WebSocketServer::HandleAccept() {
     LOG_D("handle accept");
     struct sockaddr_in clientAddr;
     socklen_t clientLen = sizeof(clientAddr);
-    int connectFd = accept(socketFd_, reinterpret_cast<struct sockaddr *>(&clientAddr), 
-                           &clientLen);
+    int connectFd = accept(socketFd_, reinterpret_cast<struct sockaddr *>(&clientAddr), &clientLen);
     if (connectFd == -1) {
         LOG_E("accept fial");
         return ErrorNo::DATA_INVALID;
     }
 
-    // if (-1 == fcntl(connectFd, O_NONBLOCK)) {
-    //     LOG_E("accept fial");
-    //     return ErrorNo::DATA_INVALID;
-    // }
-
-    // setnonblocking(connectFd);
     ErrorNo errorNo = event_.SetEvents(connectFd, EventType::READ, EventOpt::ADD);
     if (errorNo != ErrorNo::SUCCESS) {
         LOG_E("set events fail");
         return ErrorNo::FAILURE;
     }
 
-    // errorNo = event_.SetEvents(connectFd, EventType::ET, EventOpt::MOD);
-    // if (errorNo != ErrorNo::SUCCESS) {
-    //     LOG_E("set events fail");
-    //     return ErrorNo::FAILURE;
-    // }
     LOG_E("connect fd:", connectFd);
     connecter_[connectFd] = Connecter(connectFd);
     return errorNo;
 }
 
-
-ErrorNo WebSocketServer::HandleReadEvent(int connectFd)
-{
-    LOG_D("process read operation ",connectFd);
+ErrorNo WebSocketServer::HandleReadEvent(int connectFd) {
+    LOG_D("process read operation ", connectFd);
     if (connecter_.count(connectFd) == 0) {
-        LOG_E("invaild connecter:",connectFd);
+        LOG_E("invaild connecter:", connectFd);
         return ErrorNo::INVALID_PARAM;
     }
     uint64_t buffLen = 0;
     // Get the number of bytes that are immediately available for reading
     int ret = ioctl(connectFd, FIONREAD, &buffLen);
-    if (ret == -1) {  //  || buffLen == 0
-        LOG_E("get buffer length fail, len:",buffLen);
+    if (ret == -1) { //  || buffLen == 0
+        LOG_E("get buffer length fail, len:", buffLen);
         return ErrorNo::SUCCESS;
     }
 
-    std::cout << "bufflen :" << buffLen << std::endl;
     std::unique_ptr<char[]> content = std::make_unique<char[]>(buffLen);
     if (::read(connectFd, content.get(), buffLen) <= 0) {
         LOG_E("read data fail");
         return ErrorNo::FAILURE;
     }
 
-    LOG_D(content.get());
-
-    Connecter& connecter = connecter_.at(connectFd);
+    Connecter &connecter = connecter_.at(connectFd);
     ErrorNo errorNo = connecter.ProcessMessage(content.get());
     if (errorNo != ErrorNo::SUCCESS) {
         LOG_E("process msg fail");
@@ -159,8 +139,7 @@ ErrorNo WebSocketServer::HandleReadEvent(int connectFd)
     return ErrorNo::SUCCESS;
 }
 
-ErrorNo WebSocketServer::HandleWriteEvent(int connectFd)
-{
+ErrorNo WebSocketServer::HandleWriteEvent(int connectFd) {
     LOG_D("process write operation");
     if (connecter_.count(connectFd) == 0) {
         LOG_E("invaild connecter:", connectFd);
@@ -172,21 +151,18 @@ ErrorNo WebSocketServer::HandleWriteEvent(int connectFd)
     return ErrorNo::SUCCESS;
 }
 
-void WebSocketServer::DisConnectWithClient(int connectFd)
-{
+void WebSocketServer::DisConnectWithClient(int connectFd) {
     OnClosed(connectFd);
     (void)event_.SetEvents(connectFd, EventType::HUP, EventOpt::DEL);
     ::close(connectFd);
     connecter_.erase(connectFd);
 }
 
-std::unordered_map<int, Connecter> WebSocketServer::GetConnecter()
-{
+std::unordered_map<int, Connecter> WebSocketServer::GetConnecter() {
     return connecter_;
 }
 
-WebSocketServer::~WebSocketServer()
-{
+WebSocketServer::~WebSocketServer() {
     (void)event_.SetEvents(socketFd_, EventType::HUP, EventOpt::DEL);
     ::close(socketFd_);
 }

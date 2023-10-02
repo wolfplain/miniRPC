@@ -2,15 +2,12 @@
 #include "rpc/rpc_builder.h"
 #include "common/log.h"
 
-
-void RpcServer::OnStart(int connectFd)
-{
-    LOG_D("connectfd:",connectFd);
+void RpcServer::OnStart(int connectFd) {
+    LOG_D("connectfd:", connectFd);
 }
 
-void RpcServer::OnMessage(int connectFd, const std::string &message)
-{
-    LOG_D("connectfd:", connectFd, "msg:", message);
+void RpcServer::OnMessage(int connectFd, const std::string &message) {
+    LOG_D("connectfd:", connectFd, " starts processing message");
     if (message.empty()) {
         return;
     }
@@ -23,7 +20,7 @@ void RpcServer::OnMessage(int connectFd, const std::string &message)
     }
 
     std::string svc;
-    if (req.GetValue("svc", svc)!= ErrorNo::SUCCESS) {
+    if (req.GetValue("svc", svc) != ErrorNo::SUCCESS) {
         LOG_E("svc not correct");
         return;
     }
@@ -50,12 +47,10 @@ void RpcServer::OnMessage(int connectFd, const std::string &message)
     GetConnecter()[connectFd].SendResponse(rsp);
 }
 
-void RpcServer::OnClosed(int connectFd)
-{
-    LOG_D("connectfd:",connectFd);
+void RpcServer::OnClosed(int connectFd) {
+    LOG_D("connectfd:", connectFd);
 }
 
-void RpcServer::OnError(int connectFd, ErrorNo errorNo)
-{
-    LOG_D("connectfd:",connectFd,",errorno:",(int)(errorNo));
+void RpcServer::OnError(int connectFd, ErrorNo errorNo) {
+    LOG_D("connectfd:", connectFd, ",errorno:", (int)(errorNo));
 }
